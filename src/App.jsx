@@ -114,9 +114,13 @@ const HomePage = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isAuthenticated } = useAuth();
 
+  const handleShowAuth = () => {
+    setShowAuthModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-80">
-      <UserHeader onShowAuth={() => setShowAuthModal(true)} />
+      <UserHeader onShowAuth={handleShowAuth} />
 
       {/* Feature Slider */}
       <FeatureSlider />
@@ -136,7 +140,7 @@ const HomePage = () => {
 
           {!isAuthenticated && (
             <button
-              onClick={() => setShowAuthModal(true)}
+              onClick={handleShowAuth}
               className="btn-primary text-lg px-10 py-4"
             >
               Get Started
@@ -257,7 +261,9 @@ function App() {
               path="/admin/contacts"
               element={
                 <AdminProtectedRoute>
-                  <ContactManagement />
+                  <div className="min-h-screen bg-gray-50">
+                    <ContactManagement />
+                  </div>
                 </AdminProtectedRoute>
               }
             />
