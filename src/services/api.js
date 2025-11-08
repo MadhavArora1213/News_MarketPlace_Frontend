@@ -72,4 +72,12 @@ api.interceptors.response.use(
   }
 );
 
+// Admin API functions
+export const adminAPI = {
+  // Get all users
+  getUsers: () => api.get('/admin/auth/users'),
+
+  // Other admin functions can be added here
+};
+
 export default api;
