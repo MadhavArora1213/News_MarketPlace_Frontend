@@ -142,6 +142,18 @@ export default function Sidebar({
               </a>
             </li>
 
+            <li style={{ marginBottom: 10 }}>
+              <a
+                href="/admin/users"
+                style={navItemBase}
+                onMouseEnter={e => e.currentTarget.style.background = '#F0F9FF'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <span style={navIconCircle('#e0f2fe')}><Icon name="users" size="sm" style={{ color: '#0369a1' }} /></span>
+                <span>User Management</span>
+              </a>
+            </li>
+
             <li>
               <a
                 href="/admin/settings"
@@ -149,7 +161,7 @@ export default function Sidebar({
                 onMouseEnter={e => e.currentTarget.style.background = '#FFF1F0'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
               >
-                <span style={navIconCircle('#fff0f6')}><Icon name="cog-6-tooth" size="sm" style={{ color: theme.secondary }} /></span>
+                <span style={navIconCircle('#E0F2F1')}><Icon name="cog-6-tooth" size="sm" style={{ color: '#00796B' }} /></span>
                 <span>Settings</span>
               </a>
             </li>
@@ -168,6 +180,7 @@ export default function Sidebar({
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             <li style={{ marginBottom: 12 }}><a href="/admin/dashboard" style={{ color: '#212121', textDecoration: 'none', fontWeight: 600 }}>Dashboard</a></li>
             <li style={{ marginBottom: 12 }}><a href="/admin/contacts" style={{ color: '#212121', textDecoration: 'none' }}>Contacts</a></li>
+            <li style={{ marginBottom: 12 }}><a href="/admin/users" style={{ color: '#212121', textDecoration: 'none' }}>Users</a></li>
             <li style={{ marginBottom: 12 }}><a href="/admin/news" style={{ color: '#212121', textDecoration: 'none' }}>News</a></li>
             <li style={{ marginBottom: 12 }}><a href="/admin/media" style={{ color: '#212121', textDecoration: 'none' }}>Media</a></li>
             <li><a href="/admin/settings" style={{ color: '#212121', textDecoration: 'none' }}>Settings</a></li>
