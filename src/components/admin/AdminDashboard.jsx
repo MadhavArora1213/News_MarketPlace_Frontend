@@ -4,29 +4,34 @@ import Icon from '../common/Icon';
 import Sidebar from './Sidebar';
 
 // ----------------- CHANGES START -----------------
-// Brand colors from Color palette .pdf
+// Brand colors from Color palette .pdf - using only defined colors
 const theme = {
-	primary: '#1976D2',    // Primary Blue from brand palette
-	primaryDark: '#0D47A1', // Primary Dark from brand palette
-	secondary: '#F44336',  // Error Red from brand palette
-	accent: '#4CAF50',     // Success Green from brand palette
-	muted: '#F5F5F5',      // Background Soft from brand palette
-	text: '#212121',       // Text Primary from brand palette
-	textSecondary: '#757575', // Text Secondary from brand palette
-	background: '#FFFFFF', // Background from brand palette
-	backgroundAlt: '#FAFAFA', // Background Alt from brand palette
-	borderLight: '#E0E0E0', // Border Light from brand palette
-	success: '#4CAF50',    // Success Green from brand palette
-	warning: '#FF9800',    // Warning Orange from brand palette
-	danger: '#F44336',     // Error Red from brand palette
-	info: '#9C27B0',       // Info Purple from brand palette
+	primary: '#1976D2',        // Primary Blue
+	primaryDark: '#0D47A1',    // Primary Dark
+	primaryLight: '#E3F2FD',   // Primary Light
+	secondary: '#00796B',      // Secondary Teal
+	secondaryDark: '#004D40',  // Secondary Dark
+	secondaryLight: '#E0F2F1', // Secondary Light
+	success: '#4CAF50',        // Success Green
+	warning: '#FF9800',        // Warning Orange
+	danger: '#F44336',         // Error Red
+	info: '#9C27B0',           // Info Purple
+	textPrimary: '#212121',    // Text Primary
+	textSecondary: '#757575',  // Text Secondary
+	textDisabled: '#BDBDBD',   // Text Disabled
+	background: '#FFFFFF',     // Background
+	backgroundAlt: '#FAFAFA',  // Background Alt
+	backgroundSoft: '#F5F5F5', // Background Soft
+	borderLight: '#E0E0E0',    // Border Light
+	borderMedium: '#BDBDBD',   // Border Medium
+	borderDark: '#757575',     // Border Dark
 	roleColors: {
-		super_admin: { bg: '#FFE6E6', color: '#991B1B' },
-		content_manager: { bg: '#F5E9FF', color: '#6B21A8' },
-		editor: { bg: '#E8F2FF', color: '#1E3A8A' },
-		registered_user: { bg: '#E6FFFA', color: '#065F46' },
-		agency: { bg: '#FFF7ED', color: '#92400E' },
-		other: { bg: '#F3F4F6', color: '#111827' }
+		super_admin: { bg: '#E0F2F1', color: '#004D40' }, // Using secondary colors
+		content_manager: { bg: '#E3F2FD', color: '#0D47A1' }, // Using primary colors
+		editor: { bg: '#FAFAFA', color: '#212121' }, // Using neutral colors
+		registered_user: { bg: '#F5F5F5', color: '#757575' }, // Using neutral colors
+		agency: { bg: '#E0F2F1', color: '#00796B' }, // Using secondary colors
+		other: { bg: '#FAFAFA', color: '#757575' } // Using neutral colors
 	}
 };
 
@@ -82,7 +87,7 @@ const AdminDashboard = () => {
   // Small shared button styles to reflect brand palette (use inline so no CSS file needed)
   const btnPrimary = {
     backgroundColor: theme.primary,
-    color: '#fff',
+    color: '#FFFFFF',
     padding: '0.625rem 1rem',
     borderRadius: '0.5rem',
     fontWeight: 600,
@@ -96,8 +101,8 @@ const AdminDashboard = () => {
   };
 
   const btnSecondary = {
-    backgroundColor: '#fff',
-    color: theme.text,
+    backgroundColor: '#FFFFFF',
+    color: theme.textPrimary,
     border: `1px solid ${theme.borderLight}`,
     padding: '0.5rem 0.875rem',
     borderRadius: '0.5rem',
