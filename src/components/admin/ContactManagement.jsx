@@ -3,23 +3,34 @@ import { useAdminAuth } from '../../context/AdminAuthContext';
 import Icon from '../common/Icon';
 import Sidebar from './Sidebar';
 
-// Theme configuration (same as AdminDashboard)
+// Brand colors from Color palette .pdf - using only defined colors
 const theme = {
-  primary: '#0D3B66',
-  secondary: '#F95738',
-  accent: '#2EC4B6',
-  muted: '#F1F5F9',
-  text: '#0F172A',
-  success: '#16A34A',
-  warning: '#F59E0B',
-  danger: '#EF4444',
+  primary: '#1976D2',        // Primary Blue
+  primaryDark: '#0D47A1',    // Primary Dark
+  primaryLight: '#E3F2FD',   // Primary Light
+  secondary: '#00796B',      // Secondary Teal
+  secondaryDark: '#004D40',  // Secondary Dark
+  secondaryLight: '#E0F2F1', // Secondary Light
+  success: '#4CAF50',        // Success Green
+  warning: '#FF9800',        // Warning Orange
+  danger: '#F44336',         // Error Red
+  info: '#9C27B0',           // Info Purple
+  textPrimary: '#212121',    // Text Primary
+  textSecondary: '#757575',  // Text Secondary
+  textDisabled: '#BDBDBD',   // Text Disabled
+  background: '#FFFFFF',     // Background
+  backgroundAlt: '#FAFAFA',  // Background Alt
+  backgroundSoft: '#F5F5F5', // Background Soft
+  borderLight: '#E0E0E0',    // Border Light
+  borderMedium: '#BDBDBD',   // Border Medium
+  borderDark: '#757575',     // Border Dark
   roleColors: {
-    super_admin: { bg: '#FFE6E6', color: '#991B1B' },
-    content_manager: { bg: '#F5E9FF', color: '#6B21A8' },
-    editor: { bg: '#E8F2FF', color: '#1E3A8A' },
-    registered_user: { bg: '#E6FFFA', color: '#065F46' },
-    agency: { bg: '#FFF7ED', color: '#92400E' },
-    other: { bg: '#F3F4F6', color: '#111827' }
+    super_admin: { bg: '#E0F2F1', color: '#004D40' }, // Using secondary colors
+    content_manager: { bg: '#E3F2FD', color: '#0D47A1' }, // Using primary colors
+    editor: { bg: '#FAFAFA', color: '#212121' }, // Using neutral colors
+    registered_user: { bg: '#F5F5F5', color: '#757575' }, // Using neutral colors
+    agency: { bg: '#E0F2F1', color: '#00796B' }, // Using secondary colors
+    other: { bg: '#FAFAFA', color: '#757575' } // Using neutral colors
   }
 };
 
@@ -46,8 +57,8 @@ const ContactManagement = () => {
 
   const sidebarStyles = {
     width: sidebarWidth,
-    backgroundColor: '#fff',
-    borderRight: `1px solid ${theme.muted}`,
+    backgroundColor: theme.background,
+    borderRight: `1px solid ${theme.borderLight}`,
     padding: 16,
     boxSizing: 'border-box',
     borderRadius: 8
@@ -86,7 +97,8 @@ const ContactManagement = () => {
     justifyContent: 'center',
     gap: '0.5rem',
     cursor: 'pointer',
-    border: 'none'
+    border: 'none',
+    boxShadow: `0 6px 18px rgba(25,118,210,0.14)`
   };
 
   const getRoleStyle = (role) => {
@@ -270,9 +282,9 @@ const ContactManagement = () => {
           position: 'sticky',
           top: 0,
           zIndex: headerZ,
-          backgroundColor: '#ffffff',
+          backgroundColor: theme.background,
           boxShadow: '0 6px 20px rgba(2,6,23,0.06)',
-          borderBottom: `1px solid ${theme.muted}`
+          borderBottom: `1px solid ${theme.borderLight}`
         }}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10" style={{ minHeight: 64 }}>
@@ -297,7 +309,7 @@ const ContactManagement = () => {
               </button>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <Icon name="shield-check" size="lg" style={{ color: theme.primary }} />
+                <Icon name="shield-check" size="lg" style={{ color: '#1976D2' }} />
                 <span style={{ fontWeight: 700, fontSize: 18 }}>News Marketplace Admin</span>
               </div>
             </div>
@@ -352,11 +364,11 @@ const ContactManagement = () => {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 36, height: 36, borderRadius: 10, background: '#e6f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon name="chat-bubble-left-ellipsis" size="sm" style={{ color: theme.primary }} />
+                    <Icon name="chat-bubble-left-ellipsis" size="sm" style={{ color: '#1976D2' }} />
                   </div>
                   <h1 style={{ margin: 0, fontSize: 34, fontWeight: 800 }}>Contact Management</h1>
                 </div>
-                <p style={{ marginTop: 8, color: '#6b7280' }}>Manage and respond to user inquiries and feedback</p>
+                <p style={{ marginTop: 8, color: '#757575' }}>Manage and respond to user inquiries and feedback</p>
               </div>
             </div>
 
@@ -371,11 +383,11 @@ const ContactManagement = () => {
               ].map((stat, index) => (
                 <div key={index} style={{ background: '#fff', borderRadius: 12, padding: 18, boxShadow: '0 8px 20px rgba(2,6,23,0.06)', display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 48, height: 48, borderRadius: 10, background: stat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon name={stat.icon} size="lg" style={{ color: theme.primary }} />
+                    <Icon name={stat.icon} size="lg" style={{ color: '#1976D2' }} />
                   </div>
                   <div>
                     <div style={{ fontSize: 20, fontWeight: 800 }}>{stat.value}</div>
-                    <div style={{ fontSize: 12, color: '#6b7280' }}>{stat.label}</div>
+                    <div style={{ fontSize: 12, color: '#757575' }}>{stat.label}</div>
                   </div>
                 </div>
               ))}
@@ -385,7 +397,7 @@ const ContactManagement = () => {
             <div style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '12px', marginBottom: '24px', boxShadow: '0 8px 20px rgba(2,6,23,0.06)' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: theme.text, marginBottom: '8px' }}>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#212121', marginBottom: '8px' }}>
                     Search
                   </label>
                   <input
@@ -504,12 +516,12 @@ const ContactManagement = () => {
                       <tr key={contact.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
                         <td style={{ padding: '16px' }}>
                           <div>
-                            <div style={{ fontWeight: '600', fontSize: '14px', color: theme.text }}>{contact.name}</div>
-                            <div style={{ fontSize: '12px', color: '#6b7280' }}>{contact.email}</div>
+                            <div style={{ fontWeight: '600', fontSize: '14px', color: '#212121' }}>{contact.name}</div>
+                            <div style={{ fontSize: '12px', color: '#757575' }}>{contact.email}</div>
                           </div>
                         </td>
                         <td style={{ padding: '16px' }}>
-                          <div style={{ fontSize: '14px', color: theme.text, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: '14px', color: '#212121', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {getQueryTypeLabel(contact.query_type)}
                           </div>
                         </td>
@@ -537,7 +549,7 @@ const ContactManagement = () => {
                           </span>
                         </td>
                         <td style={{ padding: '16px' }}>
-                          <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                          <div style={{ fontSize: '12px', color: '#757575' }}>
                             {formatDate(contact.created_at)}
                           </div>
                         </td>
@@ -565,7 +577,7 @@ const ContactManagement = () => {
               </div>
 
               {filteredContacts.length === 0 && (
-                <div style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
+                <div style={{ padding: '40px', textAlign: 'center', color: '#757575' }}>
                   No contacts found matching your criteria.
                 </div>
               )}
@@ -586,19 +598,19 @@ const ContactManagement = () => {
                 padding: '24px'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                  <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: theme.text }}>Contact Details</h3>
+                  <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#212121' }}>Contact Details</h3>
                   <button
                     onClick={() => setSelectedContact(null)}
                     style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '8px' }}
                   >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ color: '#6b7280' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ color: '#757575' }}>
                       <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </button>
                 </div>
 
                 <div style={{ marginBottom: '20px' }}>
-                  <h4 style={{ fontSize: '16px', fontWeight: '600', color: theme.text, marginBottom: '12px' }}>{selectedContact.name}</h4>
+                  <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#212121', marginBottom: '12px' }}>{selectedContact.name}</h4>
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
                     <span style={getStatusStyle(selectedContact.status)}>{statusOptions.find(s => s.value === selectedContact.status)?.label}</span>
                     <span style={getPriorityStyle(selectedContact.priority)}>{priorityOptions.find(p => p.value === selectedContact.priority)?.label}</span>
@@ -606,35 +618,35 @@ const ContactManagement = () => {
                 </div>
 
                 <div style={{ marginBottom: '16px' }}>
-                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280', marginBottom: '8px' }}>CONTACT INFO</div>
-                  <div style={{ fontSize: '14px', color: theme.text, marginBottom: '4px' }}>📧 {selectedContact.email}</div>
-                  <div style={{ fontSize: '14px', color: theme.text, marginBottom: '4px' }}>📱 {selectedContact.number}</div>
-                  <div style={{ fontSize: '14px', color: theme.text, marginBottom: '4px' }}>💬 {selectedContact.whatsapp}</div>
-                  <div style={{ fontSize: '14px', color: theme.text }}>👤 {selectedContact.gender}</div>
+                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#757575', marginBottom: '8px' }}>CONTACT INFO</div>
+                  <div style={{ fontSize: '14px', color: '#212121', marginBottom: '4px' }}>📧 {selectedContact.email}</div>
+                  <div style={{ fontSize: '14px', color: '#212121', marginBottom: '4px' }}>📱 {selectedContact.number}</div>
+                  <div style={{ fontSize: '14px', color: '#212121', marginBottom: '4px' }}>💬 {selectedContact.whatsapp}</div>
+                  <div style={{ fontSize: '14px', color: '#212121' }}>👤 {selectedContact.gender}</div>
                 </div>
 
                 <div style={{ marginBottom: '16px' }}>
-                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280', marginBottom: '8px' }}>QUERY TYPE</div>
-                  <div style={{ fontSize: '14px', color: theme.text }}>{getQueryTypeLabel(selectedContact.query_type)}</div>
+                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#757575', marginBottom: '8px' }}>QUERY TYPE</div>
+                  <div style={{ fontSize: '14px', color: '#212121' }}>{getQueryTypeLabel(selectedContact.query_type)}</div>
                 </div>
 
                 <div style={{ marginBottom: '16px' }}>
-                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280', marginBottom: '8px' }}>MESSAGE</div>
-                  <div style={{ fontSize: '14px', color: theme.text, lineHeight: '1.5' }}>{selectedContact.message}</div>
+                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#757575', marginBottom: '8px' }}>MESSAGE</div>
+                  <div style={{ fontSize: '14px', color: '#212121', lineHeight: '1.5' }}>{selectedContact.message}</div>
                 </div>
 
                 {selectedContact.company_name && (
                   <div style={{ marginBottom: '16px' }}>
-                    <div style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280', marginBottom: '8px' }}>COMPANY INFO</div>
-                    <div style={{ fontSize: '14px', color: theme.text, marginBottom: '4px' }}><strong>Name:</strong> {selectedContact.company_name}</div>
-                    {selectedContact.company_website && <div style={{ fontSize: '14px', color: theme.text, marginBottom: '4px' }}><strong>Website:</strong> <a href={selectedContact.company_website} target="_blank" rel="noopener noreferrer" style={{ color: theme.primary }}>{selectedContact.company_website}</a></div>}
-                    {selectedContact.company_social_media && <div style={{ fontSize: '14px', color: theme.text }}><strong>Social:</strong> {selectedContact.company_social_media}</div>}
+                    <div style={{ fontSize: '12px', fontWeight: '600', color: '#757575', marginBottom: '8px' }}>COMPANY INFO</div>
+                    <div style={{ fontSize: '14px', color: '#212121', marginBottom: '4px' }}><strong>Name:</strong> {selectedContact.company_name}</div>
+                    {selectedContact.company_website && <div style={{ fontSize: '14px', color: '#212121', marginBottom: '4px' }}><strong>Website:</strong> <a href={selectedContact.company_website} target="_blank" rel="noopener noreferrer" style={{ color: '#1976D2' }}>{selectedContact.company_website}</a></div>}
+                    {selectedContact.company_social_media && <div style={{ fontSize: '14px', color: '#212121' }}><strong>Social:</strong> {selectedContact.company_social_media}</div>}
                   </div>
                 )}
 
                 <div style={{ marginBottom: '16px' }}>
-                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#6b7280', marginBottom: '8px' }}>SUBMITTED</div>
-                  <div style={{ fontSize: '14px', color: theme.text }}>{formatDate(selectedContact.created_at)}</div>
+                  <div style={{ fontSize: '12px', fontWeight: '600', color: '#757575', marginBottom: '8px' }}>SUBMITTED</div>
+                  <div style={{ fontSize: '14px', color: '#212121' }}>{formatDate(selectedContact.created_at)}</div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '8px', marginTop: '24px' }}>
@@ -659,7 +671,7 @@ const ContactManagement = () => {
                     style={{
                       flex: 1,
                       padding: '10px',
-                      backgroundColor: '#6b7280',
+                      backgroundColor: '#757575',
                       color: '#fff',
                       border: 'none',
                       borderRadius: '6px',
