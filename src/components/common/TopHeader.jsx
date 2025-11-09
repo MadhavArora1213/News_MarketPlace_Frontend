@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import Icon from './Icon';
+import { useAuth } from '../../context/AuthContext';
+import AuthModal from '../auth/AuthModal';
 
 const TopHeader = () => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+	const { isAuthenticated } = useAuth();
 
 	const menuItems = [
 		{
@@ -96,7 +100,13 @@ const TopHeader = () => {
 									key={index}
 									href={item.href}
 									className="flex flex-col items-center text-center p-1.5 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all duration-200 group"
-									onClick={() => setIsMobileMenuOpen(false)}
+									onClick={(e) => {
+										if (!isAuthenticated) {
+											e.preventDefault();
+											setIsAuthModalOpen(true);
+										}
+										setIsMobileMenuOpen(false);
+									}}
 								>
 									<div className="w-5 h-5 bg-blue-50 rounded-md flex items-center justify-center mb-1 group-hover:bg-blue-100 transition-colors">
 										<Icon
@@ -118,7 +128,13 @@ const TopHeader = () => {
 										key={index}
 										href={service.href}
 										className="flex flex-col items-center text-center p-1 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all duration-200"
-										onClick={() => setIsMobileMenuOpen(false)}
+										onClick={(e) => {
+											if (!isAuthenticated) {
+												e.preventDefault();
+												setIsAuthModalOpen(true);
+											}
+											setIsMobileMenuOpen(false);
+										}}
 									>
 										<Icon
 											name={service.icon}
@@ -168,6 +184,12 @@ const TopHeader = () => {
 													key={index}
 													href={item.href}
 													className="flex items-center space-x-2 px-2 py-1.5 text-xs text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200 w-full"
+													onClick={(e) => {
+														if (!isAuthenticated) {
+															e.preventDefault();
+															setIsAuthModalOpen(true);
+														}
+													}}
 												>
 													<Icon
 														name={item.icon}
@@ -188,6 +210,12 @@ const TopHeader = () => {
 									key={`service-${index}`}
 									href={service.href}
 									className="flex-shrink-0 flex items-center space-x-1 px-2 py-1.5 text-xs font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 border border-transparent hover:border-blue-200 group whitespace-nowrap"
+									onClick={(e) => {
+										if (!isAuthenticated) {
+											e.preventDefault();
+											setIsAuthModalOpen(true);
+										}
+									}}
 								>
 									<Icon
 										name={service.icon}
@@ -220,6 +248,12 @@ const TopHeader = () => {
 														key={index}
 														href={service.href}
 														className="flex items-center space-x-2 px-2 py-1.5 text-xs text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200 w-full"
+														onClick={(e) => {
+															if (!isAuthenticated) {
+																e.preventDefault();
+																setIsAuthModalOpen(true);
+															}
+														}}
 													>
 														<Icon
 															name={service.icon}
@@ -268,6 +302,12 @@ const TopHeader = () => {
 													key={index}
 													href={item.href}
 													className="flex items-center space-x-2 px-2 py-1.5 text-xs text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200 w-full"
+													onClick={(e) => {
+														if (!isAuthenticated) {
+															e.preventDefault();
+															setIsAuthModalOpen(true);
+														}
+													}}
 												>
 													<Icon
 														name={item.icon}
@@ -288,6 +328,12 @@ const TopHeader = () => {
 									key={`service-${index}`}
 									href={service.href}
 									className="flex items-center space-x-1.5 px-2.5 py-1.5 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 border border-transparent hover:border-blue-200 hover:shadow-md group"
+									onClick={(e) => {
+										if (!isAuthenticated) {
+											e.preventDefault();
+											setIsAuthModalOpen(true);
+										}
+									}}
 								>
 									<Icon
 										name={service.icon}
@@ -325,6 +371,12 @@ const TopHeader = () => {
 														key={index}
 														href={service.href}
 														className="flex items-center space-x-2 px-2 py-1.5 text-xs text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
+														onClick={(e) => {
+															if (!isAuthenticated) {
+																e.preventDefault();
+																setIsAuthModalOpen(true);
+															}
+														}}
 													>
 														<Icon
 															name={service.icon}
@@ -371,6 +423,12 @@ const TopHeader = () => {
 												key={index}
 												href={item.href}
 												className="flex items-center space-x-2 px-3 py-3 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
+												onClick={(e) => {
+													if (!isAuthenticated) {
+														e.preventDefault();
+														setIsAuthModalOpen(true);
+													}
+												}}
 											>
 												<Icon
 													name={item.icon}
@@ -394,6 +452,12 @@ const TopHeader = () => {
 								key={`service-${index}`}
 								href={service.href}
 								className="group relative flex items-center space-x-1.5 px-2.5 xl:px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-300 border border-transparent hover:border-blue-200 hover:shadow-md"
+								onClick={(e) => {
+									if (!isAuthenticated) {
+										e.preventDefault();
+										setIsAuthModalOpen(true);
+									}
+								}}
 							>
 								<Icon
 									name={service.icon}
@@ -430,6 +494,12 @@ const TopHeader = () => {
 													key={index}
 													href={service.href}
 													className="flex items-center space-x-2 px-3 py-2.5 text-xs text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded transition-all duration-200"
+													onClick={(e) => {
+														if (!isAuthenticated) {
+															e.preventDefault();
+															setIsAuthModalOpen(true);
+														}
+													}}
 												>
 													<Icon
 														name={service.icon}
@@ -450,6 +520,9 @@ const TopHeader = () => {
 				{/* Subtle Animation Bar */}
 				<div className="h-0.5 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 opacity-20"></div>
 			</div>
+
+			{/* Auth Modal */}
+			<AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 		</div>
 	);
 };
