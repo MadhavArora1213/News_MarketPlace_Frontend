@@ -29,7 +29,11 @@ import HowToGuides from './pages/HowToGuides';
 import DownloadCenter from './pages/DownloadCenter';
 import ResourceLibrary from './pages/ResourceLibrary';
 import PublicationsPage from './pages/PublicationsPage';
+import PublicationDetailPage from './pages/PublicationDetailPage';
 import UserProfile from './pages/UserProfile';
+import PowerListsPage from './pages/PowerListsPage';
+import PowerListDetailPage from './pages/PowerListDetailPage';
+import PowerListManagement from './components/admin/PowerListManagement';
 import Icon from './components/common/Icon';
 
 // Protected Route Component
@@ -296,6 +300,9 @@ function App() {
               }
             />
             <Route path="/publications" element={<PublicationsPage />} />
+            <Route path="/publications/:id" element={<PublicationDetailPage />} />
+            <Route path="/power-lists" element={<PowerListsPage />} />
+            <Route path="/power-lists/:id" element={<PowerListDetailPage />} />
             <Route
               path="/profile"
               element={
@@ -351,6 +358,16 @@ function App() {
                 <AdminProtectedRoute>
                   <div className="min-h-screen bg-gray-50">
                     <PublicationManagement />
+                  </div>
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/power-lists"
+              element={
+                <AdminProtectedRoute>
+                  <div className="min-h-screen bg-gray-50">
+                    <PowerListManagement />
                   </div>
                 </AdminProtectedRoute>
               }
