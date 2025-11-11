@@ -555,7 +555,7 @@ const PublicationManagement = () => {
   const [regionFilter, setRegionFilter] = useState('');
   const [industryFilter, setIndustryFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([0, 2000]);
   const [daRange, setDaRange] = useState([0, 100]);
   const [drRange, setDrRange] = useState([0, 100]);
   const [sponsoredFilter, setSponsoredFilter] = useState('');
@@ -605,6 +605,10 @@ const PublicationManagement = () => {
     fetchPublications();
     setShowBulkUploadModal(false);
     setMessage({ type: 'success', text: 'Bulk upload completed successfully!' });
+    // Force a page refresh to ensure the UI shows the updated data
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   const handleBulkEditSave = () => {
@@ -637,9 +641,9 @@ const PublicationManagement = () => {
   };
 
   const handleDownloadTemplate = () => {
-    // Download the sample data.xlsx file
+    // Download the bulk-upload-sample.xlsx file from backend
     const link = document.createElement('a');
-    link.href = '/Website_Workflow/sample data.xlsx';
+    link.href = '/bulk-upload-sample.xlsx';
     link.download = 'publications_template.xlsx';
     document.body.appendChild(link);
     link.click();
@@ -1069,11 +1073,35 @@ const PublicationManagement = () => {
 
   // Advanced filtering logic with AI-optimized search
   const filteredPublications = useMemo(() => {
-    // Start with AI-powered search results if search term exists
+    // If there's a search term, use AI search. Otherwise, use all publications
     let baseResults = debouncedSearchTerm ? performAISearch : publications;
 
-    // Apply additional filters using efficient algorithms
-    return baseResults.filter(publication => {
+    // If no search term, ensure we're showing all publications for admin view
+    // (This is the key fix for showing all active publications)
+    if (!debouncedSearchTerm && baseResults.length > 0) {
+      console.log('SHOWING ALL PUBLICATIONS (no search term):', {
+        totalBaseResults: baseResults.length,
+        sampleStatuses: baseResults.slice(0, 5).map(p => ({ name: p.publication_name, status: p.status }))
+      });
+    }
+
+    // Apply additional filters only if there are active filters
+    const hasActiveFilters = groupFilter || regionFilter || industryFilter ||
+                           selectedStatusFilters.length > 0 || languageFilter ||
+                           sponsoredFilter !== '' || liveFilter !== '' || dofollowFilter !== '' ||
+                           tatFilter.length > 0;
+
+    if (!hasActiveFilters && !debouncedSearchTerm) {
+      // No filters applied and no search - show all base results
+      console.log('NO FILTERS APPLIED - SHOWING ALL:', {
+        totalPublications: publications.length,
+        baseResultsCount: baseResults.length
+      });
+      return baseResults;
+    }
+
+    // Apply filters when they are active
+    const filtered = baseResults.filter(publication => {
       // Group filter - O(1) lookup using hash map
       const matchesGroup = !groupFilter || publication.group_id === parseInt(groupFilter);
 
@@ -1081,16 +1109,8 @@ const PublicationManagement = () => {
       const matchesRegion = !regionFilter || publication.publication_region.toLowerCase().includes(regionFilter.toLowerCase());
       const matchesIndustry = !industryFilter || publication.publication_primary_industry.toLowerCase().includes(industryFilter.toLowerCase());
 
-      // Status filter - multi-select support
+      // Status filter - multi-select support (show all if no status filters selected)
       const matchesStatus = selectedStatusFilters.length === 0 || selectedStatusFilters.includes(publication.status);
-
-      // Range filters - mathematical comparisons
-      const matchesPrice = publication.publication_price >= priceRange[0] && publication.publication_price <= priceRange[1];
-      const matchesDA = publication.da >= daRange[0] && publication.da <= daRange[1];
-      const matchesDR = publication.dr >= drRange[0] && publication.dr <= drRange[1];
-      const matchesNewsIndex = publication.website_news_index >= newsIndexRange[0] && publication.website_news_index <= newsIndexRange[1];
-      const matchesWordsLimit = publication.words_limit >= wordsLimitRange[0] && publication.words_limit <= wordsLimitRange[1];
-      const matchesImages = publication.number_of_images >= imagesRange[0] && publication.number_of_images <= imagesRange[1];
 
       // Language filter
       const matchesLanguage = !languageFilter || publication.publication_language.toLowerCase().includes(languageFilter.toLowerCase());
@@ -1112,12 +1132,43 @@ const PublicationManagement = () => {
         }
       });
 
-      // Early return for performance - fail fast
+      // Debug logging for filtered results
+      if (!matchesGroup || !matchesRegion || !matchesIndustry || !matchesStatus ||
+          !matchesLanguage || !matchesSponsored || !matchesLive || !matchesDofollow || !matchesTAT) {
+        console.log('PUBLICATION FILTERED OUT:', {
+          name: publication.publication_name,
+          status: publication.status,
+          matchesGroup,
+          matchesRegion,
+          matchesIndustry,
+          matchesStatus,
+          matchesLanguage,
+          matchesSponsored,
+          matchesLive,
+          matchesDofollow,
+          matchesTAT
+        });
+      }
+
+      // Only apply the most important filters for admin view
       return matchesGroup && matchesRegion && matchesIndustry && matchesStatus &&
-             matchesPrice && matchesDA && matchesDR && matchesNewsIndex &&
-             matchesWordsLimit && matchesImages && matchesLanguage && matchesSponsored &&
-             matchesLive && matchesDofollow && matchesTAT;
+             matchesLanguage && matchesSponsored && matchesLive && matchesDofollow && matchesTAT;
     });
+
+    // Final debug logging
+    console.log('FILTERING RESULTS:', {
+      totalPublications: publications.length,
+      baseResultsCount: baseResults.length,
+      filteredCount: filtered.length,
+      hasActiveFilters,
+      selectedStatusFilters,
+      groupFilter,
+      regionFilter,
+      industryFilter,
+      searchTerm: debouncedSearchTerm
+    });
+
+    return filtered;
   }, [publications, performAISearch, debouncedSearchTerm, groupFilter, regionFilter, industryFilter, selectedStatusFilters, priceRange, daRange, drRange, newsIndexRange, wordsLimitRange, imagesRange, languageFilter, tatFilter, sponsoredFilter, liveFilter, dofollowFilter]);
 
   // Sorting logic
@@ -1228,21 +1279,22 @@ const PublicationManagement = () => {
 
   const hasActiveFilters = () => {
     return debouncedSearchTerm ||
-           groupFilter ||
-           regionFilter ||
-           industryFilter ||
-           selectedStatusFilters.length > 0 ||
-           priceRange[0] > 0 || priceRange[1] < 2000 ||
-           daRange[0] > 0 || daRange[1] < 100 ||
-           drRange[0] > 0 || drRange[1] < 100 ||
-           newsIndexRange[0] > 0 || newsIndexRange[1] < 100 ||
-           wordsLimitRange[0] > 0 || wordsLimitRange[1] < 10000 ||
-           imagesRange[0] > 0 || imagesRange[1] < 50 ||
-           languageFilter ||
-           tatFilter.length > 0 ||
-           sponsoredFilter !== '' ||
-           liveFilter !== '' ||
-           dofollowFilter !== '';
+            groupFilter ||
+            regionFilter ||
+            industryFilter ||
+            selectedStatusFilters.length > 0 ||
+            priceRange[0] > 0 || priceRange[1] < 2000 ||
+            daRange[0] > 0 || daRange[1] < 100 ||
+            drRange[0] > 0 || drRange[1] < 100 ||
+            newsIndexRange[0] > 0 || newsIndexRange[1] < 100 ||
+            wordsLimitRange[0] > 0 || wordsLimitRange[1] < 10000 ||
+            imagesRange[0] > 0 || imagesRange[1] < 50 ||
+            languageFilter ||
+            tatFilter.length > 0 ||
+            sponsoredFilter !== '' ||
+            liveFilter !== '' ||
+            dofollowFilter !== '' ||
+            showDeleted;
   };
 
   const getPublicationStats = () => {
@@ -1250,9 +1302,10 @@ const PublicationManagement = () => {
     const total = dataSource.length;
     const approved = dataSource.filter(p => p.status === 'approved').length;
     const pending = dataSource.filter(p => p.status === 'pending').length;
+    const rejected = dataSource.filter(p => p.status === 'rejected').length;
     const active = dataSource.filter(p => p.is_active).length;
 
-    return { total, approved, pending, active };
+    return { total, approved, pending, rejected, active };
   };
 
   const stats = getPublicationStats();
@@ -1909,7 +1962,7 @@ const PublicationManagement = () => {
                     </label>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       {statusOptions.map(option => {
-                        const count = publications.filter(p => p.status === option.value).length;
+                        const count = publications.filter(p => p.status === option.value && p.is_active).length;
                         return (
                           <label key={option.value} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px' }}>
                             <input
@@ -2648,74 +2701,80 @@ const PublicationManagement = () => {
                 <p style={{ marginTop: 8, color: '#757575' }}>Manage news publications and their details</p>
               </div>
 
-              <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', flexWrap: 'wrap', maxWidth: '100%', overflow: 'hidden' }}>
                 <button
                   onClick={handleDownloadTemplate}
                   style={{
                     backgroundColor: '#10b981',
                     color: '#fff',
-                    padding: '12px 20px',
-                    borderRadius: '8px',
+                    padding: '10px 16px',
+                    borderRadius: '6px',
                     fontWeight: 600,
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '0.5rem',
+                    gap: '0.25rem',
                     cursor: 'pointer',
                     border: 'none',
-                    boxShadow: '0 6px 18px rgba(16,185,129,0.14)',
-                    fontSize: '14px'
+                    boxShadow: '0 4px 12px rgba(16,185,129,0.14)',
+                    fontSize: '13px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0
                   }}
                   disabled={!hasAnyRole(['super_admin', 'content_manager'])}
                 >
-                  <Icon name="document-arrow-down" size="sm" style={{ color: '#fff', marginRight: 8 }} />
-                  Download Template
+                  <Icon name="document-arrow-down" size="sm" style={{ color: '#fff' }} />
+                  Template
                 </button>
                 {selectedPublications.length > 0 && (
-                  <div style={{ display: 'flex', gap: '8px', marginRight: '16px' }}>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                     <button
                       onClick={() => setShowBulkEditModal(true)}
                       style={{
-                        padding: '8px 16px',
+                        padding: '8px 12px',
                         backgroundColor: '#f59e0b',
                         color: '#fff',
-                        borderRadius: '8px',
+                        borderRadius: '6px',
                         fontWeight: 600,
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '0.5rem',
+                        gap: '0.25rem',
                         cursor: 'pointer',
                         border: 'none',
-                        boxShadow: '0 6px 18px rgba(245,158,11,0.14)',
-                        fontSize: '14px'
+                        boxShadow: '0 4px 12px rgba(245,158,11,0.14)',
+                        fontSize: '13px',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0
                       }}
                       disabled={!hasRole('super_admin')}
                     >
-                      <Icon name="pencil" size="sm" style={{ color: '#fff', marginRight: 8 }} />
-                      Bulk Edit ({selectedPublications.length})
+                      <Icon name="pencil" size="sm" style={{ color: '#fff' }} />
+                      Edit ({selectedPublications.length})
                     </button>
                     <button
                       onClick={() => setShowBulkDeleteModal(true)}
                       style={{
-                        padding: '8px 16px',
+                        padding: '8px 12px',
                         backgroundColor: '#ef4444',
                         color: '#fff',
-                        borderRadius: '8px',
+                        borderRadius: '6px',
                         fontWeight: 600,
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '0.5rem',
+                        gap: '0.25rem',
                         cursor: 'pointer',
                         border: 'none',
-                        boxShadow: '0 6px 18px rgba(239,68,68,0.14)',
-                        fontSize: '14px'
+                        boxShadow: '0 4px 12px rgba(239,68,68,0.14)',
+                        fontSize: '13px',
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0
                       }}
                       disabled={!hasRole('super_admin')}
                     >
-                      <Icon name="trash" size="sm" style={{ color: '#fff', marginRight: 8 }} />
-                      Bulk Delete ({selectedPublications.length})
+                      <Icon name="trash" size="sm" style={{ color: '#fff' }} />
+                      Delete ({selectedPublications.length})
                     </button>
                   </div>
                 )}
@@ -2724,30 +2783,48 @@ const PublicationManagement = () => {
                   style={{
                     backgroundColor: '#8b5cf6',
                     color: '#fff',
-                    padding: '12px 20px',
-                    borderRadius: '8px',
+                    padding: '10px 16px',
+                    borderRadius: '6px',
                     fontWeight: 600,
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '0.5rem',
+                    gap: '0.25rem',
                     cursor: 'pointer',
                     border: 'none',
-                    boxShadow: '0 6px 18px rgba(139,92,246,0.14)',
-                    fontSize: '14px'
+                    boxShadow: '0 4px 12px rgba(139,92,246,0.14)',
+                    fontSize: '13px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0
                   }}
                   disabled={!hasRole('super_admin')}
                 >
-                  <Icon name="cloud-arrow-up" size="sm" style={{ color: '#fff', marginRight: 8 }} />
-                  Bulk Upload
+                  <Icon name="cloud-arrow-up" size="sm" style={{ color: '#fff' }} />
+                  Upload
                 </button>
                 <button
                   onClick={handleCreatePublication}
-                  style={{ ...btnPrimary, fontSize: '14px', padding: '12px 20px' }}
+                  style={{
+                    backgroundColor: theme.primary,
+                    color: '#fff',
+                    padding: '10px 16px',
+                    borderRadius: '6px',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.25rem',
+                    cursor: 'pointer',
+                    border: 'none',
+                    boxShadow: `0 4px 12px rgba(25,118,210,0.14)`,
+                    fontSize: '13px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0
+                  }}
                   disabled={!hasRole('super_admin')}
                 >
-                  <Icon name="plus" size="sm" style={{ color: '#fff', marginRight: 8 }} />
-                  Add Publication
+                  <Icon name="plus" size="sm" style={{ color: '#fff' }} />
+                  Add
                 </button>
               </div>
             </div>
@@ -2758,6 +2835,7 @@ const PublicationManagement = () => {
                 { label: 'Total Publications', value: stats.total, icon: 'document-text', bg: '#e6f0ff' },
                 { label: 'Approved', value: stats.approved, icon: 'check-circle', bg: '#dcfce7' },
                 { label: 'Pending', value: stats.pending, icon: 'clock', bg: '#fef3c7' },
+                { label: 'Rejected', value: stats.rejected, icon: 'x-circle', bg: '#fee2e2' },
                 { label: 'Active', value: stats.active, icon: 'eye', bg: '#e0f2fe' }
               ].map((stat, index) => (
                 <div key={index} style={{ background: '#fff', borderRadius: 12, padding: 18, boxShadow: '0 8px 20px rgba(2,6,23,0.06)', display: 'flex', alignItems: 'center', gap: 12 }}>
